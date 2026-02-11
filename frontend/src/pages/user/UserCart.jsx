@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext.jsx';
+import { API_BASE_URL } from '../../services/api.js';
 import { FiTrash2, FiPlus, FiMinus, FiArrowLeft, FiShoppingBag } from 'react-icons/fi';
 
 const UserCart = () => {
@@ -31,7 +32,7 @@ const UserCart = () => {
         <div className="flex-1 space-y-3">
           {cartItems.map(item => (
             <div key={item._id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
-              {item.image && <img src={`/uploads/${item.image}`} alt={item.name} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />}
+              {item.image && <img src={`${API_BASE_URL}/uploads/${item.image}`} alt={item.name} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />}
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-gray-900 truncate">{item.name}</h3>
                 <p className="text-sm text-purple-600 font-bold">₹{item.price}</p>

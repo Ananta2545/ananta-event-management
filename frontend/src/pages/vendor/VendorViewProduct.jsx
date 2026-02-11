@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import API from '../../services/api.js';
+import API, { API_BASE_URL } from '../../services/api.js';
 import { VENDOR } from '../../services/endpoints.js';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader.jsx';
@@ -25,7 +25,7 @@ const VendorViewProduct = () => {
       <button onClick={() => navigate('/vendor/your-items')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 mb-4 transition"><FiArrowLeft size={14} /> Back to Items</button>
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {product.image && (
-          <img src={`/uploads/${product.image}`} alt={product.name} className="w-full h-64 object-cover" />
+          <img src={`${API_BASE_URL}/uploads/${product.image}`} alt={product.name} className="w-full h-64 object-cover" />
         )}
         <div className="p-6">
           <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import API from '../../services/api.js';
+import API, { API_BASE_URL } from '../../services/api.js';
 import { USER } from '../../services/endpoints.js';
 import { useCart } from '../../context/CartContext.jsx';
 import { toast } from 'react-toastify';
@@ -33,7 +33,7 @@ const UserShopItems = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.map(p => (
             <div key={p._id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition">
-              {p.image && <img src={`/uploads/${p.image}`} alt={p.name} className="w-full h-44 object-cover" />}
+              {p.image && <img src={`${API_BASE_URL}/uploads/${p.image}`} alt={p.name} className="w-full h-44 object-cover" />}
               <div className="p-4">
                 <h3 className="text-base font-semibold text-gray-900">{p.name}</h3>
                 <p className="text-lg font-bold text-purple-600 mt-1">₹{p.price}</p>
