@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const guestSchema = new mongoose.Schema(
   {
@@ -8,7 +8,7 @@ const guestSchema = new mongoose.Schema(
     phone: { type: String, trim: true },
     relation: { type: String, trim: true, default: "" },
   },
-  { _id: true }
+  { _id: true },
 );
 
 const userSchema = new mongoose.Schema(
@@ -67,7 +67,7 @@ const userSchema = new mongoose.Schema(
     /* ── Common ── */
     isActive: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 /* ── Hash password before saving ── */
@@ -90,4 +90,4 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-module.exports = mongoose.model("User", userSchema);
+export default mongoose.model("User", userSchema);

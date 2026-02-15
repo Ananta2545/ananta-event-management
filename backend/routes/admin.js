@@ -1,7 +1,6 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import User from "../models/User.js";
+import {
   getAllVendors,
   addVendor,
   updateVendor,
@@ -13,9 +12,10 @@ const {
   deleteUser,
   getDashboardStats,
   getAllTransactions,
-} = require("../controllers/adminController");
+} from "../controllers/adminController.js";
+import { authenticate, authorize } from "../middleware/auth.js";
 
-const { authenticate, authorize } = require("../middleware/auth");
+const router = express.Router();
 
 // All admin routes require authentication + admin role
 router.use(authenticate, authorize("admin"));
@@ -29,7 +29,6 @@ router.get("/vendors", getAllVendors);
 router.post("/vendors", addVendor);
 router.get("/vendors/:id", async (req, res, next) => {
   try {
-    const User = require("../models/User");
     const vendor = await User.findOne({ _id: req.params.id, role: "vendor" });
     if (!vendor) return res.status(404).json({ message: "Vendor not found." });
     res.json(vendor);
@@ -54,7 +53,6 @@ router.get("/users", getAllUsers);
 router.post("/users", addUser);
 router.get("/users/:id", async (req, res, next) => {
   try {
-    const User = require("../models/User");
     const user = await User.findOne({ _id: req.params.id, role: "user" });
     if (!user) return res.status(404).json({ message: "User not found." });
     res.json(user);
@@ -65,4 +63,4 @@ router.get("/users/:id", async (req, res, next) => {
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const Product = require("../models/Product");
-const Order = require("../models/Order");
+import Product from "../models/Product.js";
+import Order from "../models/Order.js";
 
 /* ────────────────────────────────────────────────── */
 /*  Products                                         */
@@ -8,7 +8,9 @@ const Order = require("../models/Order");
 // GET /api/vendor/products
 const getMyProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({ vendorId: req.user._id }).sort("-createdAt");
+    const products = await Product.find({ vendorId: req.user._id }).sort(
+      "-createdAt",
+    );
     res.json(products);
   } catch (error) {
     next(error);
@@ -21,7 +23,9 @@ const addProduct = async (req, res, next) => {
     const { name, price, status } = req.body;
 
     if (!name || price === undefined) {
-      return res.status(400).json({ message: "Product name and price are required." });
+      return res
+        .status(400)
+        .json({ message: "Product name and price are required." });
     }
 
     const image = req.file ? req.file.filename : "";
@@ -44,7 +48,10 @@ const addProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   try {
     const { name, price, status } = req.body;
-    const product = await Product.findOne({ _id: req.params.id, vendorId: req.user._id });
+    const product = await Product.findOne({
+      _id: req.params.id,
+      vendorId: req.user._id,
+    });
 
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
@@ -99,7 +106,13 @@ const getVendorOrders = async (req, res, next) => {
 const updateOrderStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const validStatuses = ["Ordered", "Received", "Ready for Shipping", "Out For Delivery", "Delivered"];
+    const validStatuses = [
+      "Ordered",
+      "Received",
+      "Ready for Shipping",
+      "Out For Delivery",
+      "Delivered",
+    ];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid order status." });
@@ -112,10 +125,12 @@ const updateOrderStatus = async (req, res, next) => {
 
     // Verify this vendor has items in the order
     const hasItems = order.items.some(
-      (item) => item.vendorId.toString() === req.user._id.toString()
+      (item) => item.vendorId.toString() === req.user._id.toString(),
     );
     if (!hasItems) {
-      return res.status(403).json({ message: "You don't have items in this order." });
+      return res
+        .status(403)
+        .json({ message: "You don't have items in this order." });
     }
 
     order.status = status;
@@ -134,7 +149,9 @@ const updateOrderStatus = async (req, res, next) => {
 // GET /api/vendor/dashboard
 const getVendorDashboard = async (req, res, next) => {
   try {
-    const totalProducts = await Product.countDocuments({ vendorId: req.user._id });
+    const totalProducts = await Product.countDocuments({
+      vendorId: req.user._id,
+    });
 
     const orders = await Order.find({ "items.vendorId": req.user._id });
     const totalOrders = orders.length;
@@ -143,7 +160,10 @@ const getVendorDashboard = async (req, res, next) => {
     let totalRevenue = 0;
     orders.forEach((order) => {
       order.items.forEach((item) => {
-        if (item.vendorId && item.vendorId.toString() === req.user._id.toString()) {
+        if (
+          item.vendorId &&
+          item.vendorId.toString() === req.user._id.toString()
+        ) {
           totalRevenue += item.price * item.qty;
         }
       });
@@ -158,7 +178,10 @@ const getVendorDashboard = async (req, res, next) => {
 // GET /api/vendor/products/:id
 const getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findOne({ _id: req.params.id, vendorId: req.user._id });
+    const product = await Product.findOne({
+      _id: req.params.id,
+      vendorId: req.user._id,
+    });
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
@@ -168,7 +191,7 @@ const getProductById = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   getMyProducts,
   addProduct,
   updateProduct,

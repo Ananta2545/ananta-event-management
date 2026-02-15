@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 /**
  * Helper – calculate membership end date from months.
@@ -23,7 +23,15 @@ const generateToken = (user) =>
 /* ────────────────────────────────────────────────── */
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, phone, role, vendorCategory, membershipMonths } = req.body;
+    const {
+      name,
+      email,
+      password,
+      phone,
+      role,
+      vendorCategory,
+      membershipMonths,
+    } = req.body;
 
     // Validation
     if (!name || !email || !password || !role) {
@@ -44,7 +52,9 @@ const register = async (req, res, next) => {
 
     if (role === "vendor") {
       if (!vendorCategory) {
-        return res.status(400).json({ message: "Category is required for vendors." });
+        return res
+          .status(400)
+          .json({ message: "Category is required for vendors." });
       }
       const months = Number(membershipMonths) || 6;
       userData.vendorCategory = vendorCategory;
@@ -70,7 +80,9 @@ const login = async (req, res, next) => {
     const { email, password, role } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required." });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
     }
 
     const user = await User.findOne({ email });
@@ -80,7 +92,9 @@ const login = async (req, res, next) => {
 
     // Optionally enforce role match
     if (role && user.role !== role) {
-      return res.status(401).json({ message: `This account is not a ${role} account.` });
+      return res
+        .status(401)
+        .json({ message: `This account is not a ${role} account.` });
     }
 
     const isMatch = await user.comparePassword(password);
@@ -112,4 +126,4 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getMe };
+export { register, login, getMe };

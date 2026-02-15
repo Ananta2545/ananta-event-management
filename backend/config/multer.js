@@ -1,5 +1,10 @@
-const path = require("path");
-const multer = require("multer");
+import path from "path";
+import { fileURLToPath } from "url";
+import multer from "multer";
+
+/* ── __dirname polyfill for ES modules ── */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -21,7 +26,10 @@ const fileFilter = (_req, file, cb) => {
   if (isValid) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files (jpeg, jpg, png, gif, webp) are allowed"), false);
+    cb(
+      new Error("Only image files (jpeg, jpg, png, gif, webp) are allowed"),
+      false,
+    );
   }
 };
 
@@ -31,4 +39,4 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
 });
 
-module.exports = upload;
+export default upload;

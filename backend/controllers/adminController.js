@@ -1,5 +1,5 @@
-const User = require("../models/User");
-const Order = require("../models/Order");
+import User from "../models/User.js";
+import Order from "../models/Order.js";
 
 /**
  * Helper – calculate membership end date from months.
@@ -253,7 +253,7 @@ const getAllTransactions = async (_req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   getAllVendors,
   addVendor,
   updateVendor,

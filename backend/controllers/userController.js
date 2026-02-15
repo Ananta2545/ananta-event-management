@@ -1,6 +1,6 @@
-const User = require("../models/User");
-const Product = require("../models/Product");
-const Order = require("../models/Order");
+import User from "../models/User.js";
+import Product from "../models/Product.js";
+import Order from "../models/Order.js";
 
 /* ────────────────────────────────────────────────── */
 /*  Browse Vendors                                   */
@@ -13,7 +13,9 @@ const getVendors = async (req, res, next) => {
     if (req.query.category) {
       filter.vendorCategory = req.query.category;
     }
-    const vendors = await User.find(filter).select("name email vendorCategory phone");
+    const vendors = await User.find(filter).select(
+      "name email vendorCategory phone",
+    );
     res.json(vendors);
   } catch (error) {
     next(error);
@@ -41,12 +43,7 @@ const getVendorProducts = async (req, res, next) => {
 // POST /api/user/orders
 const placeOrder = async (req, res, next) => {
   try {
-    const {
-      items,
-      totalAmount,
-      paymentMethod,
-      shippingAddress,
-    } = req.body;
+    const { items, totalAmount, paymentMethod, shippingAddress } = req.body;
 
     // Validation
     if (!items || items.length === 0) {
@@ -64,8 +61,13 @@ const placeOrder = async (req, res, next) => {
       shippingAddress: shippingAddress || {},
     });
 
-    const populatedOrder = await Order.findById(order._id).populate("userId", "name email");
-    res.status(201).json({ message: "Order placed successfully.", order: populatedOrder });
+    const populatedOrder = await Order.findById(order._id).populate(
+      "userId",
+      "name email",
+    );
+    res
+      .status(201)
+      .json({ message: "Order placed successfully.", order: populatedOrder });
   } catch (error) {
     next(error);
   }
@@ -169,7 +171,7 @@ const deleteGuest = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   getVendors,
   getVendorProducts,
   placeOrder,

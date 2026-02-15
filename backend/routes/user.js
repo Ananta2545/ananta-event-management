@@ -1,7 +1,5 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   getVendors,
   getVendorProducts,
   placeOrder,
@@ -11,9 +9,10 @@ const {
   addGuest,
   updateGuest,
   deleteGuest,
-} = require("../controllers/userController");
+} from "../controllers/userController.js";
+import { authenticate, authorize } from "../middleware/auth.js";
 
-const { authenticate, authorize } = require("../middleware/auth");
+const router = express.Router();
 
 // All user routes require authentication + user role
 router.use(authenticate, authorize("user"));
@@ -37,4 +36,4 @@ router.put("/guest-list/:guestId", updateGuest);
 router.delete("/guests/:guestId", deleteGuest);
 router.delete("/guest-list/:guestId", deleteGuest);
 
-module.exports = router;
+export default router;

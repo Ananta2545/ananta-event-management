@@ -1,7 +1,5 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   getMyProducts,
   addProduct,
   updateProduct,
@@ -10,10 +8,11 @@ const {
   getVendorOrders,
   updateOrderStatus,
   getVendorDashboard,
-} = require("../controllers/vendorController");
+} from "../controllers/vendorController.js";
+import { authenticate, authorize } from "../middleware/auth.js";
+import upload from "../config/multer.js";
 
-const { authenticate, authorize } = require("../middleware/auth");
-const upload = require("../config/multer");
+const router = express.Router();
 
 // All vendor routes require authentication + vendor role
 router.use(authenticate, authorize("vendor"));
@@ -32,4 +31,4 @@ router.delete("/products/:id", deleteProduct);
 router.get("/orders", getVendorOrders);
 router.put("/orders/:id/status", updateOrderStatus);
 
-module.exports = router;
+export default router;

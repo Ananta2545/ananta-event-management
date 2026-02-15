@@ -19,7 +19,9 @@ const errorHandler = (err, _req, res, _next) => {
 
   /* Multer file-size error */
   if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(400).json({ message: "File size exceeds the 5 MB limit." });
+    return res
+      .status(400)
+      .json({ message: "File size exceeds the 5 MB limit." });
   }
 
   /* JWT error */
@@ -32,4 +34,4 @@ const errorHandler = (err, _req, res, _next) => {
   res.status(status).json({ message: err.message || "Internal Server Error" });
 };
 
-module.exports = errorHandler;
+export default errorHandler;

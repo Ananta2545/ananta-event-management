@@ -1,25 +1,32 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import "dotenv/config";
 
-const connectDB = require("./config/db");
-const errorHandler = require("./middleware/errorHandler");
+import connectDB from "./config/db.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 // Route imports
-const authRoutes = require("./routes/auth");
-const adminRoutes = require("./routes/admin");
-const vendorRoutes = require("./routes/vendor");
-const userRoutes = require("./routes/user");
+import authRoutes from "./routes/auth.js";
+import adminRoutes from "./routes/admin.js";
+import vendorRoutes from "./routes/vendor.js";
+import userRoutes from "./routes/user.js";
+
+/* ── __dirname polyfill for ES modules ── */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /* ── Initialise app ── */
 const app = express();
 
 /* ── Global middleware ── */
-app.use(cors({
-            origin: ["https://your-vercel-app.vercel.app", "http://localhost:5173"],
-            credentials: true
-        }));
+app.use(
+  cors({
+    origin: ["https://your-vercel-app.vercel.app", "http://localhost:5173"],
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
