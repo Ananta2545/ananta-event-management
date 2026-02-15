@@ -218,7 +218,8 @@ const getDashboardStats = async (_req, res, next) => {
 const getAllTransactions = async (_req, res, next) => {
   try {
     const orders = await Order.find()
-      .populate("userId", "name email")
+      .populate("userId", "name email phone")
+      .populate("items.vendorId", "name email vendorCategory")
       .sort("-createdAt");
     res.json(orders);
   } catch (error) {

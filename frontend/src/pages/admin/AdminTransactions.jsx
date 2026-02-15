@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../../services/api";
+import API, { API_BASE_URL } from "../../services/api";
 import { ADMIN } from "../../services/endpoints";
 import Loader from "../../components/Loader";
-import { FiArrowLeft, FiSearch, FiDownload } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiSearch,
+  FiDownload,
+  FiX,
+  FiUser,
+  FiShoppingBag,
+  FiMapPin,
+  FiCreditCard,
+  FiPackage,
+} from "react-icons/fi";
 import { toast } from "react-toastify";
 
 const AdminTransactions = () => {
@@ -11,6 +21,7 @@ const AdminTransactions = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -35,6 +46,8 @@ const AdminTransactions = () => {
   const statusColor = (s) => {
     if (s === "Delivered") return "bg-emerald-100 text-emerald-700";
     if (s === "Out For Delivery") return "bg-blue-100 text-blue-700";
+    if (s === "Ready for Shipping") return "bg-cyan-100 text-cyan-700";
+    if (s === "Received") return "bg-violet-100 text-violet-700";
     if (s === "Ordered") return "bg-amber-100 text-amber-700";
     return "bg-gray-100 text-gray-700";
   };
@@ -82,6 +95,22 @@ const AdminTransactions = () => {
     URL.revokeObjectURL(url);
     toast.success("Transactions exported successfully!");
   };
+
+  const formatDate = (d) =>
+    new Date(d).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+  const formatDateTime = (d) =>
+    new Date(d).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   if (loading) return <Loader text="Loading transactions..." />;
 
@@ -140,7 +169,8 @@ const AdminTransactions = () => {
                 filteredOrders.map((order) => (
                   <tr
                     key={order._id}
-                    className="hover:bg-gray-50/50 transition-colors"
+                    onClick={() => setSelectedOrder(order)}
+                    className="hover:bg-indigo-50/40 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4 font-mono text-gray-600">
                       {order._id.slice(-6).toUpperCase()}
@@ -167,7 +197,7 @@ const AdminTransactions = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {formatDate(order.createdAt)}
                     </td>
                   </tr>
                 ))
@@ -185,6 +215,195 @@ const AdminTransactions = () => {
           </table>
         </div>
       </div>
+
+      {selectedOrder && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedOrder(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Transaction Details
+                </h2>
+                <p className="text-xs text-gray-500 font-mono mt-0.5">
+                  ID: {selectedOrder._id}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <FiX size={18} className="text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColor(selectedOrder.status)}`}
+                >
+                  {selectedOrder.status}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {formatDateTime(selectedOrder.createdAt)}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                      <FiUser size={16} className="text-indigo-600" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Buyer Details
+                    </h3>
+                  </div>
+                  <div className="space-y-1.5 text-sm">
+                    <p className="text-gray-900 font-medium">
+                      {selectedOrder.userId?.name || "Unknown"}
+                    </p>
+                    <p className="text-gray-500">
+                      {selectedOrder.userId?.email || "N/A"}
+                    </p>
+                    {selectedOrder.userId?.phone && (
+                      <p className="text-gray-500">
+                        {selectedOrder.userId.phone}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                      <FiCreditCard size={16} className="text-emerald-600" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Payment Info
+                    </h3>
+                  </div>
+                  <div className="space-y-1.5 text-sm">
+                    <p className="text-gray-900 font-medium">
+                      ₹{selectedOrder.totalAmount?.toLocaleString()}
+                    </p>
+                    <p className="text-gray-500">
+                      Method: {selectedOrder.paymentMethod}
+                    </p>
+                    <p className="text-gray-500">
+                      Items: {selectedOrder.items?.length || 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {(selectedOrder.shippingAddress?.address ||
+                selectedOrder.shippingAddress?.city ||
+                selectedOrder.shippingAddress?.pincode) && (
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                      <FiMapPin size={16} className="text-amber-600" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Shipping Address
+                    </h3>
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    {[
+                      selectedOrder.shippingAddress.address,
+                      selectedOrder.shippingAddress.city,
+                      selectedOrder.shippingAddress.pincode,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                    <FiPackage size={16} className="text-violet-600" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700">
+                    Items Ordered ({selectedOrder.items?.length || 0})
+                  </h3>
+                </div>
+
+                <div className="space-y-3">
+                  {selectedOrder.items?.map((item, idx) => (
+                    <div
+                      key={item._id || idx}
+                      className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 border border-gray-100"
+                    >
+                      {item.image ? (
+                        <img
+                          src={`${API_BASE_URL}/uploads/${item.image}`}
+                          alt={item.name}
+                          className="w-14 h-14 rounded-lg object-cover border border-gray-200"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-lg bg-gray-200 flex items-center justify-center">
+                          <FiShoppingBag
+                            size={20}
+                            className="text-gray-400"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
+                          {item.name}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm text-gray-500">
+                            Qty: {item.qty}
+                          </span>
+                          <span className="text-gray-300">·</span>
+                          <span className="text-sm text-gray-500">
+                            ₹{item.price} each
+                          </span>
+                        </div>
+                        {item.vendorId && (
+                          <p className="text-xs text-indigo-600 mt-1">
+                            Sold by:{" "}
+                            {item.vendorId.name || "Unknown Vendor"}
+                            {item.vendorId.vendorCategory
+                              ? ` (${item.vendorId.vendorCategory})`
+                              : ""}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-semibold text-gray-900">
+                          ₹{(item.price * item.qty).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">
+                    Total
+                  </span>
+                  <span className="text-lg font-bold text-gray-900">
+                    ₹{selectedOrder.totalAmount?.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
