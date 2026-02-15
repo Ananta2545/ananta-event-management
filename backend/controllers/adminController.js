@@ -27,10 +27,13 @@ const getAllVendors = async (_req, res, next) => {
 // POST /api/admin/vendors
 const addVendor = async (req, res, next) => {
   try {
-    const { name, email, password, phone, vendorCategory, membershipMonths } = req.body;
+    const { name, email, password, phone, vendorCategory, membershipMonths } =
+      req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: "Name, email and password are required." });
+      return res
+        .status(400)
+        .json({ message: "Name, email and password are required." });
     }
 
     const existing = await User.findOne({ email });
@@ -101,7 +104,8 @@ const updateMembership = async (req, res, next) => {
 
     // Extend membership
     const m = Number(months) || 6;
-    const baseDate = vendor.membershipEnd > new Date() ? vendor.membershipEnd : new Date();
+    const baseDate =
+      vendor.membershipEnd > new Date() ? vendor.membershipEnd : new Date();
     vendor.membershipMonths = m;
     vendor.membershipEnd = calcMembershipEnd(baseDate, m);
     vendor.isActive = true;
@@ -116,7 +120,10 @@ const updateMembership = async (req, res, next) => {
 // DELETE /api/admin/vendors/:id
 const deleteVendor = async (req, res, next) => {
   try {
-    const vendor = await User.findOneAndDelete({ _id: req.params.id, role: "vendor" });
+    const vendor = await User.findOneAndDelete({
+      _id: req.params.id,
+      role: "vendor",
+    });
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found." });
     }
@@ -154,7 +161,13 @@ const addUser = async (req, res, next) => {
       return res.status(400).json({ message: "Email already registered." });
     }
 
-    const user = await User.create({ name, email, password, phone: phone || "", role: "user" });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      phone: phone || "",
+      role: "user",
+    });
     res.status(201).json({ message: "User added successfully.", user });
   } catch (error) {
     next(error);
@@ -186,7 +199,10 @@ const updateUser = async (req, res, next) => {
 // DELETE /api/admin/users/:id
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findOneAndDelete({ _id: req.params.id, role: "user" });
+    const user = await User.findOneAndDelete({
+      _id: req.params.id,
+      role: "user",
+    });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -213,7 +229,25 @@ const getDashboardStats = async (_req, res, next) => {
     });
     const expiredVendors = totalVendors - activeVendors;
 
-    res.json({ totalVendors, totalUsers, totalOrders, activeVendors, expiredVendors });
+    res.json({
+      totalVendors,
+      totalUsers,
+      totalOrders,
+      activeVendors,
+      expiredVendors,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/admin/transactions
+const getAllTransactions = async (_req, res, next) => {
+  try {
+    const orders = await Order.find()
+      .populate("userId", "name email")
+      .sort("-createdAt");
+    res.json(orders);
   } catch (error) {
     next(error);
   }
@@ -230,4 +264,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getDashboardStats,
+  getAllTransactions,
 };

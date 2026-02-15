@@ -45,6 +45,10 @@ const AdminSignup = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white outline-none transition-all duration-200" placeholder={f.ph} />
               </div>
             ))}
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="terms" required className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+              <label htmlFor="terms" className="text-[13px] text-gray-600">I agree to the <span className="text-indigo-600 font-medium cursor-pointer">Terms & Conditions</span></label>
+            </div>
             <button type="submit" disabled={submitting}
               className="w-full py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-50 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm shadow-indigo-200">
               {submitting && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}

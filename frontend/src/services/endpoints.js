@@ -14,6 +14,8 @@ export const ADMIN = {
   CANCEL_MEMBERSHIP: (id) => `/admin/vendors/${id}/cancel`,
   USERS: '/admin/users',
   USER_BY_ID: (id) => `/admin/users/${id}`,
+  TRANSACTIONS: '/admin/transactions',
+  REPORTS: '/admin/dashboard',
 };
 
 /* ─── Vendor ─── */

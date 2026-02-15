@@ -12,6 +12,7 @@ const {
   updateUser,
   deleteUser,
   getDashboardStats,
+  getAllTransactions,
 } = require("../controllers/adminController");
 
 const { authenticate, authorize } = require("../middleware/auth");
@@ -21,6 +22,7 @@ router.use(authenticate, authorize("admin"));
 
 // Dashboard
 router.get("/dashboard", getDashboardStats);
+router.get("/transactions", getAllTransactions);
 
 // Vendor management
 router.get("/vendors", getAllVendors);
@@ -31,7 +33,9 @@ router.get("/vendors/:id", async (req, res, next) => {
     const vendor = await User.findOne({ _id: req.params.id, role: "vendor" });
     if (!vendor) return res.status(404).json({ message: "Vendor not found." });
     res.json(vendor);
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 });
 router.put("/vendors/:id", updateVendor);
 router.put("/vendors/:id/extend", (req, res, next) => {
@@ -54,7 +58,9 @@ router.get("/users/:id", async (req, res, next) => {
     const user = await User.findOne({ _id: req.params.id, role: "user" });
     if (!user) return res.status(404).json({ message: "User not found." });
     res.json(user);
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 });
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
