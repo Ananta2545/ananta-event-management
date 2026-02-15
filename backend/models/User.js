@@ -40,8 +40,6 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "vendor", "user"],
       required: [true, "Role is required"],
     },
-
-    /* ── Vendor-specific ── */
     vendorCategory: {
       type: String,
       enum: [
@@ -60,17 +58,12 @@ const userSchema = new mongoose.Schema(
     membershipStart: { type: Date },
     membershipEnd: { type: Date },
     membershipMonths: { type: Number, default: 0 },
-
-    /* ── User-specific ── */
     guestList: [guestSchema],
-
-    /* ── Common ── */
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
 
-/* ── Hash password before saving ── */
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
@@ -78,12 +71,10 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-/* ── Compare password method ── */
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-/* ── Remove password from JSON output ── */
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

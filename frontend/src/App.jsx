@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-/* ─── Auth Pages ─── */
 import AdminLogin from "./pages/auth/AdminLogin.jsx";
 import AdminSignup from "./pages/auth/AdminSignup.jsx";
 import VendorLogin from "./pages/auth/VendorLogin.jsx";
@@ -12,7 +11,6 @@ import VendorSignup from "./pages/auth/VendorSignup.jsx";
 import UserLogin from "./pages/auth/UserLogin.jsx";
 import UserSignup from "./pages/auth/UserSignup.jsx";
 
-/* ─── Admin Pages ─── */
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import MaintainVendor from "./pages/admin/MaintainVendor.jsx";
 import MaintainUser from "./pages/admin/MaintainUser.jsx";
@@ -23,7 +21,6 @@ import UpdateUserAdmin from "./pages/admin/UpdateUserAdmin.jsx";
 import AdminReports from "./pages/admin/AdminReports.jsx";
 import AdminTransactions from "./pages/admin/AdminTransactions.jsx";
 
-/* ─── Vendor Pages ─── */
 import VendorDashboard from "./pages/vendor/VendorDashboard.jsx";
 import VendorAddItem from "./pages/vendor/VendorAddItem.jsx";
 import VendorYourItems from "./pages/vendor/VendorYourItems.jsx";
@@ -32,7 +29,6 @@ import VendorProductStatus from "./pages/vendor/VendorProductStatus.jsx";
 import VendorRequestItem from "./pages/vendor/VendorRequestItem.jsx";
 import VendorViewProduct from "./pages/vendor/VendorViewProduct.jsx";
 
-/* ─── User Pages ─── */
 import UserDashboard from "./pages/user/UserDashboard.jsx";
 import UserVendorList from "./pages/user/UserVendorList.jsx";
 import UserShopItems from "./pages/user/UserShopItems.jsx";
@@ -48,7 +44,6 @@ const App = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[80px] pb-12 min-h-screen">
         <Routes>
-          {/* ── Public / Auth ── */}
           <Route path="/" element={<Navigate to="/admin/login" />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/signup" element={<AdminSignup />} />
@@ -57,7 +52,6 @@ const App = () => {
           <Route path="/user/login" element={<UserLogin />} />
           <Route path="/user/signup" element={<UserSignup />} />
 
-          {/* ── Admin ── */}
           <Route
             path="/admin/dashboard"
             element={
@@ -131,7 +125,6 @@ const App = () => {
             }
           />
 
-          {/* ── Vendor ── */}
           <Route
             path="/vendor/dashboard"
             element={
@@ -189,7 +182,6 @@ const App = () => {
             }
           />
 
-          {/* ── User ── */}
           <Route
             path="/user/dashboard"
             element={

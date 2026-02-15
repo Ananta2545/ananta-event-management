@@ -29,7 +29,7 @@ const AdminTransactions = () => {
     (o) =>
       o._id.toLowerCase().includes(search.toLowerCase()) ||
       o.userId?.name?.toLowerCase().includes(search.toLowerCase()) ||
-      o.userId?.email?.toLowerCase().includes(search.toLowerCase())
+      o.userId?.email?.toLowerCase().includes(search.toLowerCase()),
   );
 
   const statusColor = (s) => {
@@ -39,14 +39,21 @@ const AdminTransactions = () => {
     return "bg-gray-100 text-gray-700";
   };
 
-  /* ── Export to CSV ── */
   const handleExport = () => {
     if (filteredOrders.length === 0) {
       toast.info("No transactions to export");
       return;
     }
 
-    const headers = ["Transaction ID", "User Name", "User Email", "Amount", "Payment Method", "Status", "Date"];
+    const headers = [
+      "Transaction ID",
+      "User Name",
+      "User Email",
+      "Amount",
+      "Payment Method",
+      "Status",
+      "Date",
+    ];
     const rows = filteredOrders.map((o) => [
       o._id,
       o.userId?.name || "N/A",
@@ -59,7 +66,9 @@ const AdminTransactions = () => {
 
     const csvContent = [
       headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+      ...rows.map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
+      ),
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -80,12 +89,17 @@ const AdminTransactions = () => {
     <div className="animate-in fade-in space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate("/admin/dashboard")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button
+            onClick={() => navigate("/admin/dashboard")}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
             <FiArrowLeft size={20} className="text-gray-600" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-            <p className="text-sm text-gray-500">Manage and view all platform transactions</p>
+            <p className="text-sm text-gray-500">
+              Manage and view all platform transactions
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -124,25 +138,45 @@ const AdminTransactions = () => {
             <tbody className="divide-y divide-gray-100">
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-mono text-gray-600">{order._id.slice(-6).toUpperCase()}</td>
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{order.userId?.name || "Unknown"}</div>
-                      <div className="text-xs text-gray-500">{order.userId?.email}</div>
+                  <tr
+                    key={order._id}
+                    className="hover:bg-gray-50/50 transition-colors"
+                  >
+                    <td className="px-6 py-4 font-mono text-gray-600">
+                      {order._id.slice(-6).toUpperCase()}
                     </td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">₹{order.totalAmount}</td>
-                    <td className="px-6 py-4 text-gray-600">{order.paymentMethod}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusColor(order.status)}`}>
+                      <div className="font-medium text-gray-900">
+                        {order.userId?.name || "Unknown"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {order.userId?.email}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-gray-900">
+                      ₹{order.totalAmount}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">
+                      {order.paymentMethod}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusColor(order.status)}`}
+                      >
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-400">
+                  <td
+                    colSpan="6"
+                    className="px-6 py-8 text-center text-gray-400"
+                  >
                     No transactions found matching your search.
                   </td>
                 </tr>

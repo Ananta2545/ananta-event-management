@@ -1,26 +1,17 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-/**
- * Helper – calculate membership end date from months.
- */
 const calcMembershipEnd = (startDate, months) => {
   const end = new Date(startDate);
   end.setMonth(end.getMonth() + Number(months));
   return end;
 };
 
-/**
- * Helper – generate JWT.
- */
 const generateToken = (user) =>
   jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
 
-/* ────────────────────────────────────────────────── */
-/*  POST  /api/auth/register                         */
-/* ────────────────────────────────────────────────── */
 const register = async (req, res, next) => {
   try {
     const {
@@ -33,7 +24,6 @@ const register = async (req, res, next) => {
       membershipMonths,
     } = req.body;
 
-    // Validation
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -41,13 +31,11 @@ const register = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid registration role." });
     }
 
-    // Check duplicate
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(400).json({ message: "Email already registered." });
     }
 
-    // Build user data
     const userData = { name, email, password, phone: phone || "", role };
 
     if (role === "vendor") {
@@ -72,9 +60,6 @@ const register = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  POST  /api/auth/login                            */
-/* ────────────────────────────────────────────────── */
 const login = async (req, res, next) => {
   try {
     const { email, password, role } = req.body;
@@ -90,7 +75,6 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    // Optionally enforce role match
     if (role && user.role !== role) {
       return res
         .status(401)
@@ -113,9 +97,6 @@ const login = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  GET  /api/auth/me                                */
-/* ────────────────────────────────────────────────── */
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);

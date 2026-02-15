@@ -1,11 +1,6 @@
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 
-/* ────────────────────────────────────────────────── */
-/*  Products                                         */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/vendor/products
 const getMyProducts = async (req, res, next) => {
   try {
     const products = await Product.find({ vendorId: req.user._id }).sort(
@@ -17,7 +12,6 @@ const getMyProducts = async (req, res, next) => {
   }
 };
 
-// POST /api/vendor/products
 const addProduct = async (req, res, next) => {
   try {
     const { name, price, status } = req.body;
@@ -44,7 +38,6 @@ const addProduct = async (req, res, next) => {
   }
 };
 
-// PUT /api/vendor/products/:id
 const updateProduct = async (req, res, next) => {
   try {
     const { name, price, status } = req.body;
@@ -69,7 +62,6 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
-// DELETE /api/vendor/products/:id
 const deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findOneAndDelete({
@@ -85,11 +77,6 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Orders / Transactions                            */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/vendor/orders
 const getVendorOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ "items.vendorId": req.user._id })
@@ -102,7 +89,6 @@ const getVendorOrders = async (req, res, next) => {
   }
 };
 
-// PUT /api/vendor/orders/:id/status
 const updateOrderStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
@@ -123,7 +109,6 @@ const updateOrderStatus = async (req, res, next) => {
       return res.status(404).json({ message: "Order not found." });
     }
 
-    // Verify this vendor has items in the order
     const hasItems = order.items.some(
       (item) => item.vendorId.toString() === req.user._id.toString(),
     );
@@ -142,11 +127,6 @@ const updateOrderStatus = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Dashboard                                        */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/vendor/dashboard
 const getVendorDashboard = async (req, res, next) => {
   try {
     const totalProducts = await Product.countDocuments({
@@ -156,7 +136,6 @@ const getVendorDashboard = async (req, res, next) => {
     const orders = await Order.find({ "items.vendorId": req.user._id });
     const totalOrders = orders.length;
 
-    // Calculate revenue from items belonging to this vendor
     let totalRevenue = 0;
     orders.forEach((order) => {
       order.items.forEach((item) => {
@@ -175,7 +154,6 @@ const getVendorDashboard = async (req, res, next) => {
   }
 };
 
-// GET /api/vendor/products/:id
 const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findOne({

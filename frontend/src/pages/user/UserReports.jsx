@@ -14,7 +14,6 @@ const UserReports = () => {
   useEffect(() => {
     (async () => {
       try {
-        // Fetch User's Orders to calculate stats
         const { data } = await API.get(USER.ORDERS);
         const totalOrders = data.length;
         const totalSpent = data.reduce(

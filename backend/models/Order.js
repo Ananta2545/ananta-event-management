@@ -17,7 +17,7 @@ const orderItemSchema = new mongoose.Schema(
     qty: { type: Number, default: 1, min: 1 },
     image: { type: String, default: "" },
   },
-  { _id: true }
+  { _id: true },
 );
 
 const orderSchema = new mongoose.Schema(
@@ -41,7 +41,13 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Ordered", "Received", "Ready for Shipping", "Out For Delivery", "Delivered"],
+      enum: [
+        "Ordered",
+        "Received",
+        "Ready for Shipping",
+        "Out For Delivery",
+        "Delivered",
+      ],
       default: "Ordered",
     },
     paymentMethod: {
@@ -49,15 +55,13 @@ const orderSchema = new mongoose.Schema(
       enum: ["Cash", "UPI"],
       required: [true, "Payment method is required"],
     },
-
-    /* ── Shipping Details ── */
     shippingAddress: {
       address: { type: String, default: "" },
       city: { type: String, default: "" },
       pincode: { type: String, default: "" },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Order", orderSchema);

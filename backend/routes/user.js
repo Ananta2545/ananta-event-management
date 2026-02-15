@@ -14,19 +14,15 @@ import { authenticate, authorize } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// All user routes require authentication + user role
 router.use(authenticate, authorize("user"));
 
-// Browse vendors
 router.get("/vendors", getVendors);
 router.get("/vendors/:id/products", getVendorProducts);
 
-// Orders
 router.post("/orders", placeOrder);
 router.get("/orders", getMyOrders);
 router.get("/orders/:id", getOrderById);
 
-// Guest list (support both /guests and /guest-list)
 router.get("/guests", getGuestList);
 router.get("/guest-list", getGuestList);
 router.post("/guests", addGuest);

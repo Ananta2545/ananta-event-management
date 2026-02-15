@@ -1,20 +1,12 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 
-/**
- * Helper – calculate membership end date from months.
- */
 const calcMembershipEnd = (startDate, months) => {
   const end = new Date(startDate);
   end.setMonth(end.getMonth() + Number(months));
   return end;
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Vendor Management                                */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/admin/vendors
 const getAllVendors = async (_req, res, next) => {
   try {
     const vendors = await User.find({ role: "vendor" }).sort("-createdAt");
@@ -24,7 +16,6 @@ const getAllVendors = async (_req, res, next) => {
   }
 };
 
-// POST /api/admin/vendors
 const addVendor = async (req, res, next) => {
   try {
     const { name, email, password, phone, vendorCategory, membershipMonths } =
@@ -62,7 +53,6 @@ const addVendor = async (req, res, next) => {
   }
 };
 
-// PUT /api/admin/vendors/:id
 const updateVendor = async (req, res, next) => {
   try {
     const { name, email, phone, vendorCategory, isActive } = req.body;
@@ -85,10 +75,9 @@ const updateVendor = async (req, res, next) => {
   }
 };
 
-// PUT /api/admin/vendors/:id/membership
 const updateMembership = async (req, res, next) => {
   try {
-    const { months, action } = req.body; // action: "extend" | "cancel"
+    const { months, action } = req.body;
     const vendor = await User.findOne({ _id: req.params.id, role: "vendor" });
 
     if (!vendor) {
@@ -102,7 +91,6 @@ const updateMembership = async (req, res, next) => {
       return res.json({ message: "Membership cancelled.", vendor });
     }
 
-    // Extend membership
     const m = Number(months) || 6;
     const baseDate =
       vendor.membershipEnd > new Date() ? vendor.membershipEnd : new Date();
@@ -117,7 +105,6 @@ const updateMembership = async (req, res, next) => {
   }
 };
 
-// DELETE /api/admin/vendors/:id
 const deleteVendor = async (req, res, next) => {
   try {
     const vendor = await User.findOneAndDelete({
@@ -133,11 +120,6 @@ const deleteVendor = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  User Management                                  */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/admin/users
 const getAllUsers = async (_req, res, next) => {
   try {
     const users = await User.find({ role: "user" }).sort("-createdAt");
@@ -147,7 +129,6 @@ const getAllUsers = async (_req, res, next) => {
   }
 };
 
-// POST /api/admin/users
 const addUser = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -174,7 +155,6 @@ const addUser = async (req, res, next) => {
   }
 };
 
-// PUT /api/admin/users/:id
 const updateUser = async (req, res, next) => {
   try {
     const { name, email, phone, isActive } = req.body;
@@ -196,7 +176,6 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-// DELETE /api/admin/users/:id
 const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findOneAndDelete({
@@ -212,11 +191,6 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Dashboard Stats                                  */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/admin/stats
 const getDashboardStats = async (_req, res, next) => {
   try {
     const totalVendors = await User.countDocuments({ role: "vendor" });
@@ -241,7 +215,6 @@ const getDashboardStats = async (_req, res, next) => {
   }
 };
 
-// GET /api/admin/transactions
 const getAllTransactions = async (_req, res, next) => {
   try {
     const orders = await Order.find()

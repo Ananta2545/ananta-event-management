@@ -2,11 +2,6 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 
-/* ────────────────────────────────────────────────── */
-/*  Browse Vendors                                   */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/user/vendors?category=Florist
 const getVendors = async (req, res, next) => {
   try {
     const filter = { role: "vendor", isActive: true };
@@ -22,7 +17,6 @@ const getVendors = async (req, res, next) => {
   }
 };
 
-// GET /api/user/vendors/:id/products
 const getVendorProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
@@ -36,16 +30,10 @@ const getVendorProducts = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Orders                                           */
-/* ────────────────────────────────────────────────── */
-
-// POST /api/user/orders
 const placeOrder = async (req, res, next) => {
   try {
     const { items, totalAmount, paymentMethod, shippingAddress } = req.body;
 
-    // Validation
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Cart is empty." });
     }
@@ -73,7 +61,6 @@ const placeOrder = async (req, res, next) => {
   }
 };
 
-// GET /api/user/orders
 const getMyOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ userId: req.user._id })
@@ -86,7 +73,6 @@ const getMyOrders = async (req, res, next) => {
   }
 };
 
-// GET /api/user/orders/:id
 const getOrderById = async (req, res, next) => {
   try {
     const order = await Order.findOne({
@@ -103,11 +89,6 @@ const getOrderById = async (req, res, next) => {
   }
 };
 
-/* ────────────────────────────────────────────────── */
-/*  Guest List                                       */
-/* ────────────────────────────────────────────────── */
-
-// GET /api/user/guests
 const getGuestList = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select("guestList");
@@ -117,7 +98,6 @@ const getGuestList = async (req, res, next) => {
   }
 };
 
-// POST /api/user/guests
 const addGuest = async (req, res, next) => {
   try {
     const { name, email, phone, relation } = req.body;
@@ -135,7 +115,6 @@ const addGuest = async (req, res, next) => {
   }
 };
 
-// PUT /api/user/guests/:guestId
 const updateGuest = async (req, res, next) => {
   try {
     const { name, email, phone, relation } = req.body;
@@ -158,7 +137,6 @@ const updateGuest = async (req, res, next) => {
   }
 };
 
-// DELETE /api/user/guests/:guestId
 const deleteGuest = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);

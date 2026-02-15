@@ -17,14 +17,11 @@ import { authenticate, authorize } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// All admin routes require authentication + admin role
 router.use(authenticate, authorize("admin"));
 
-// Dashboard
 router.get("/dashboard", getDashboardStats);
 router.get("/transactions", getAllTransactions);
 
-// Vendor management
 router.get("/vendors", getAllVendors);
 router.post("/vendors", addVendor);
 router.get("/vendors/:id", async (req, res, next) => {
@@ -48,7 +45,6 @@ router.put("/vendors/:id/cancel", (req, res, next) => {
 router.put("/vendors/:id/membership", updateMembership);
 router.delete("/vendors/:id", deleteVendor);
 
-// User management
 router.get("/users", getAllUsers);
 router.post("/users", addUser);
 router.get("/users/:id", async (req, res, next) => {
